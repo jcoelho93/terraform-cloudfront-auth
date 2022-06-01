@@ -117,9 +117,12 @@ data "local_file" "build-js" {
 #
 resource "aws_s3_bucket" "default" {
   bucket = var.bucket_name
-  acl    = "private"
   tags   = var.tags
-  region = var.region
+}
+
+resource "aws_s3_bucket_acl" "bucket_acl" {
+  bucket = aws_s3_bucket.default.id
+  acl = "private"
 }
 
 data "aws_iam_policy_document" "s3_bucket_policy" {
