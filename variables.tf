@@ -123,3 +123,9 @@ variable "bucket_access_roles_arn_list" {
   default     = []
   description = "A Role ARN which granted RW rights to bucket (to be used by instance profiles in order to upload/cleanup bucket content)"
 }
+
+variable "lambda_execution_role_arn" {
+  type        = string
+  description = "A Role ARN to execute the lambda functions"
+  nullable    = true
+}
