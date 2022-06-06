@@ -277,7 +277,7 @@ resource "aws_lambda_function" "default" {
   provider         = aws.us-east-1
   description      = "Managed by Terraform"
   runtime          = "nodejs10.x"
-  role             = var.lambda_execution_role_arn ? var.lambda_execution_role_arn : aws_iam_role.lambda_role[0].arn
+  role             = var.lambda_execution_role_arn != "" ? var.lambda_execution_role_arn : aws_iam_role.lambda_role[0].arn
   filename         = local.lambda_filename
   function_name    = "cloudfront_auth"
   handler          = "index.handler"
@@ -308,22 +308,21 @@ data "aws_iam_policy_document" "lambda_assume_role" {
 }
 
 resource "aws_iam_role" "lambda_role" {
-  count              = var.lambda_execution_role_arn ? 0 : 1
+  count              = var.lambda_execution_role_arn != "" ? 0 : 1
   name               = "lambda_role"
   assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
 }
 
 # Attach the logging access document to the above role.
 resource "aws_iam_role_policy_attachment" "lambda_log_access" {
-  count      = var.lambda_execution_role_arn ? 0 : 1
+  count      = var.lambda_execution_role_arn != "" ? 0 : 1
   role       = aws_iam_role.lambda_role[0].name
   policy_arn = aws_iam_policy.lambda_log_access[0].arn
 }
 
 # Create an IAM policy that will be attached to the role
 resource "aws_iam_policy" "lambda_log_access" {
-  count  = var.lambda_execution_role_arn ? 0 : 1
+  count  = var.lambda_execution_role_arn != "" ? 0 : 1
   name   = "cloudfront_auth_lambda_log_access"
   policy = data.aws_iam_policy_document.lambda_log_access.json
 }
-

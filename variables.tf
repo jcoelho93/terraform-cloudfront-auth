@@ -126,6 +126,6 @@ variable "bucket_access_roles_arn_list" {
 
 variable "lambda_execution_role_arn" {
   type        = string
+  default     = ""
   description = "A Role ARN to execute the lambda functions"
-  nullable    = true
 }
